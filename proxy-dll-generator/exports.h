@@ -1,0 +1,20 @@
+#include <windows.h>
+#define WIN32_LEAN_AND_MEAN
+
+#pragma comment(linker, "/export:GetFileVersionInfoA=MyGetFileVersionInfoA")
+#pragma comment(linker, "/export:GetFileVersionInfoByHandle=MyGetFileVersionInfoByHandle")
+#pragma comment(linker, "/export:GetFileVersionInfoExA=MyGetFileVersionInfoExA")
+#pragma comment(linker, "/export:GetFileVersionInfoExW=MyGetFileVersionInfoExW")
+#pragma comment(linker, "/export:GetFileVersionInfoSizeA=MyGetFileVersionInfoSizeA")
+#pragma comment(linker, "/export:GetFileVersionInfoSizeExA=MyGetFileVersionInfoSizeExA")
+#pragma comment(linker, "/export:GetFileVersionInfoSizeExW=MyGetFileVersionInfoSizeExW")
+#pragma comment(linker, "/export:GetFileVersionInfoSizeW=MyGetFileVersionInfoSizeW")
+#pragma comment(linker, "/export:GetFileVersionInfoW=MyGetFileVersionInfoW")
+#pragma comment(linker, "/export:VerFindFileA=MyVerFindFileA")
+#pragma comment(linker, "/export:VerFindFileW=MyVerFindFileW")
+#pragma comment(linker, "/export:VerInstallFileA=MyVerInstallFileA")
+#pragma comment(linker, "/export:VerInstallFileW=MyVerInstallFileW")
+#pragma comment(linker, "/export:VerLanguageNameA=MyVerLanguageNameA")
+#pragma comment(linker, "/export:VerLanguageNameW=MyVerLanguageNameW")
+#pragma comment(linker, "/export:VerQueryValueA=MyVerQueryValueA")
+#pragma comment(linker, "/export:VerQueryValueW=MyVerQueryValueW")
