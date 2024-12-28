@@ -16,7 +16,7 @@ std::vector<FunctionInfo> ParseDLL(const std::string& dllPath)
     HMODULE hModule = LoadLibrary(dllPath.c_str());
     if (!hModule)
     {
-        std::cerr << "Failed to load DLL: " << dllPath << std::endl;
+        std::cerr << "Failed to load DLL: " << dllPath << '\n';
         return {};
     }
 
@@ -30,7 +30,7 @@ std::vector<FunctionInfo> ParseDLL(const std::string& dllPath)
     auto exportDirRVA = ntHeaders->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress;
     if (exportDirRVA == 0)
     {
-        std::cerr << "No export directory found in DLL." << std::endl;
+        std::cerr << "No export directory found in DLL." << '\n';
         FreeLibrary(hModule);
         return {};
     }
@@ -56,7 +56,7 @@ void GeneratePragmaExports(const std::vector<FunctionInfo>& functions, const std
     std::ofstream outputFile(outputPath);
     if (!outputFile)
     {
-        std::cerr << "Failed to open output file: " << outputPath << std::endl;
+        std::cerr << "Failed to open output file: " << outputPath << '\n';
         return;
     }
 
@@ -69,7 +69,7 @@ void GeneratePragmaExports(const std::vector<FunctionInfo>& functions, const std
     }
 
     outputFile.close();
-    std::cout << "Generated #pragma exports in: " << outputPath << std::endl;
+    std::cout << "Generated #pragma exports in: " << outputPath << '\n';
 }
 
 int main()
@@ -81,7 +81,7 @@ int main()
     std::vector<FunctionInfo> functions = ParseDLL(dllPath);
     if (functions.empty())
     {
-        std::cerr << "No functions found in DLL." << std::endl;
+        std::cerr << "No functions found in DLL." << '\n';
         return 1;
     }
 
