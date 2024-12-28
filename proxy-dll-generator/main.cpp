@@ -13,7 +13,7 @@ struct FunctionInfo
 
 std::vector<FunctionInfo> ParseDLL(const std::string& dllPath)
 {
-    HMODULE hModule = LoadLibrary(dllPath.c_str());
+    const HMODULE hModule{LoadLibrary(dllPath.c_str())};
     if (!hModule)
     {
         std::cerr << "Failed to load DLL: " << dllPath << '\n';
@@ -22,10 +22,9 @@ std::vector<FunctionInfo> ParseDLL(const std::string& dllPath)
 
     std::vector<FunctionInfo> functions;
 
-    // Enumerate exported functions
-    auto baseAddress = reinterpret_cast<char*>(hModule);
-    auto dosHeader = reinterpret_cast<IMAGE_DOS_HEADER*>(baseAddress);
-    auto ntHeaders = reinterpret_cast<IMAGE_NT_HEADERS*>(baseAddress + dosHeader->e_lfanew);
+    const auto baseAddress{reinterpret_cast<char*>(hModule)};
+    const auto dosHeader{reinterpret_cast<IMAGE_DOS_HEADER*>(baseAddress)};
+    const auto ntHeaders{reinterpret_cast<IMAGE_NT_HEADERS*>(baseAddress + dosHeader->e_lfanew)};
 
     auto exportDirRVA = ntHeaders->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress;
     if (exportDirRVA == 0)
@@ -35,16 +34,16 @@ std::vector<FunctionInfo> ParseDLL(const std::string& dllPath)
         return {};
     }
 
-    auto exportDir = reinterpret_cast<IMAGE_EXPORT_DIRECTORY*>(baseAddress + exportDirRVA);
-    auto names = reinterpret_cast<DWORD*>(baseAddress + exportDir->AddressOfNames);
-    auto ordinals = reinterpret_cast<WORD*>(baseAddress + exportDir->AddressOfNameOrdinals);
-    auto functionsRVA = reinterpret_cast<DWORD*>(baseAddress + exportDir->AddressOfFunctions);
+    const auto exportDir{reinterpret_cast<IMAGE_EXPORT_DIRECTORY*>(baseAddress + exportDirRVA)};
+    const auto names{reinterpret_cast<DWORD*>(baseAddress + exportDir->AddressOfNames)};
+    const auto ordinals{reinterpret_cast<WORD*>(baseAddress + exportDir->AddressOfNameOrdinals)};
+    const auto functionsRVA{reinterpret_cast<DWORD*>(baseAddress + exportDir->AddressOfFunctions)};
 
-    for (size_t i = 0; i < exportDir->NumberOfNames; ++i)
+    for (size_t i{0}; i < exportDir->NumberOfNames; ++i)
     {
-        std::string functionName(reinterpret_cast<char*>(baseAddress + names[i]));
-        FARPROC address = reinterpret_cast<FARPROC>(baseAddress + functionsRVA[ordinals[i]]);
-        functions.push_back({ functionName, address });
+        const std::string functionName(baseAddress + names[i]);
+        const FARPROC address{reinterpret_cast<FARPROC>(baseAddress + functionsRVA[ordinals[i]])};
+        functions.push_back({functionName, address});
     }
 
     FreeLibrary(hModule);
@@ -74,11 +73,10 @@ void GeneratePragmaExports(const std::vector<FunctionInfo>& functions, const std
 
 int main()
 {
-    std::string dllPath = R"(C:\Users\anton\Desktop\hax\DLL hijack\version_orig.dll)";
+    const std::string dllPath{R"(C:\Windows\System32\version.dll)"};
+    const std::string outputPath{"exports.h"};
+    const std::vector functions{ParseDLL(dllPath)};
 
-    std::string outputPath = "exports.h";
-
-    std::vector<FunctionInfo> functions = ParseDLL(dllPath);
     if (functions.empty())
     {
         std::cerr << "No functions found in DLL." << '\n';
